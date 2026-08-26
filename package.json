@@ -1,0 +1,8 @@
+{
+  "name": "media-course-semantic-search",
+  "private": true,
+  "type": "module",
+  "scripts": {"example": "tsx src/semantic_search_example.ts", "test": "tsx src/semantic_search_test.ts", "typecheck": "tsc --noEmit"},
+  "dependencies": {"openai": "^4.80.0", "zod": "^3.24.1"},
+  "devDependencies": {"tsx": "^4.19.2", "typescript": "^5.7.2"}
+}
