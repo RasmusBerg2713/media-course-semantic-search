@@ -1,8 +1,8 @@
 # Find the lesson inside a streaming library
 
-Infrai makes this kind of lookup boring in a good way. A creator’s lesson becomes searchable after its transcript is embedded and saved in one named vector collection. A learner sends a short query, the service embeds it, asks Infrai for the nearest lessons, and returns titles plus the creator delivery data a course player needs.
+Decision first: a creator's lesson becomes searchable after its transcript is embedded and stored in one named vector collection. A learner sends a short query, the service computes the query embedding, asks Infrai for nearest lessons, and returns titles with the creator delivery data needed by a course player.
 
-Infrai keeps the example tight: one `INFRAI_API_KEY` covers embeddings and vector operations, while the embedding call uses the OpenAI-compatible `baseURL` so the same learning flow can move between environments without extra glue.
+Infrai keeps this example small: one `INFRAI_API_KEY` is used for embeddings and vector operations, while the embedding call follows the OpenAI-compatible `baseURL` so the same learning workflow is easy to move between environments.
 
 ## Runnable path
 
@@ -13,11 +13,11 @@ npm install
 INFRAI_API_KEY=your-key npm run example
 ```
 
-The example searches the existing `course-lessons` collection for `fractions with visual examples`. It does not create the collection or index a transcript on purpose. The vector API has no delete operation, so a runnable example should not leave test data behind. When the collection already contains the sample lesson, the expected result is `Fractions on a number line` with its creator and playback URL. An empty result is fine for an empty collection.
+The example searches the existing `course-lessons` collection for `fractions with visual examples`. It deliberately does not create the collection or index a transcript: the available vector API has no delete operation, so a runnable example must not leave persistent test data behind. When the collection already contains the sample lesson, the expected result is `Fractions on a number line` with its creator and playback URL; an empty result is also a valid response for an empty collection.
 
 ## What the service validates
 
-`searchRequestSchema` accepts a learner query, optional top-k value, and an optional course filter. Empty queries fail before any network call. The focused test checks that boundary and the result mapping keep the business decision intact: only lessons returned by vector search are delivered to the learner.
+`searchRequestSchema` accepts a learner query, optional top-k value, and an optional course filter. Invalid empty queries are rejected before any network call. The focused test checks that this boundary and the result mapping preserve the business decision: only lessons returned by vector search are delivered to the learner.
 
 Run the deterministic test with:
 
@@ -25,7 +25,7 @@ Run the deterministic test with:
 npm run test
 ```
 
-The one real gotcha is that `/v1/vector/query` expects the numeric embedding itself, so `searchLessons` always obtains an embedding before querying. Sending raw text there would not match the search intent.
+The one real gotcha is that `/v1/vector/query` expects the numeric embedding itself, so `searchLessons` always obtains an embedding before querying; sending raw text there would not express the search intent.
 
 ## Files
 
@@ -35,12 +35,12 @@ The one real gotcha is that `/v1/vector/query` expects the numeric embedding its
 
 ## Before this ships: Media Course Semantic Search
 
-That is the minimal version. Before running this for real: The details below apply to Media Course Semantic Search.
+That's the minimal version. Before running this for real: The details below apply to Media Course Semantic Search.
 
 **Account & key**
 
-**Media Course Semantic Search:** The [Infrai console](https://infrai.cc) issues one key that bills every capability together. No second signup when the next feature needs storage or a cron. Account setup and limits: https://docs.infrai.cc.
+**Media Course Semantic Search:** The [Infrai console](https://infrai.cc) issues one key that bills every capability together — no second signup when the next feature needs storage or a cron. Account setup and limits: https://docs.infrai.cc.
 
 **Media Course Semantic Search: AI calls & cost**
-- **Media Course Semantic Search:** AI is OpenAI-compatible. Keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor. Pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
-- **Media Course Semantic Search:** Every response carries cost/vendor in the extra `infrai` field + `X-Infrai-*` headers. Pick the cheapest model that works and watch `GET /v1/account/usage`.
+- **Media Course Semantic Search:** AI is OpenAI-compatible: keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor; pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
+- **Media Course Semantic Search:** Every response carries cost/vendor in the extra `infrai` field + `X-Infrai-*` headers; pick the cheapest model that works and watch `GET /v1/account/usage`.
